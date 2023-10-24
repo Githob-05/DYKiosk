@@ -1,16 +1,14 @@
-import 'package:dy_kiosk/pages/selectedDrinkPage.dart';
 import 'package:flutter/material.dart';
 
 class SliverListItem extends StatelessWidget {
-  const SliverListItem(
-      {super.key,
-      required this.drinkClass,
-      required this.drinkType,
-      this.onTap});
+  const SliverListItem({
+    super.key,
+    required this.drinkClass,
+    required this.drinkType,
+  });
 
   final List<Map> drinkClass;
   final String drinkType;
-  final onTap;
 
   // final File image;
 
@@ -45,19 +43,94 @@ class SliverListItem extends StatelessWidget {
                   builder: (BuildContext context) {
                     return Center(
                       child: Padding(
-                        padding: EdgeInsets.all(30),
+                        padding: const EdgeInsets.all(100),
                         child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)),
                           width: double.infinity,
                           height: double.infinity,
-                          color: Colors.white,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "이 팝업은 화면의 절반 이상을 가립니다.",
-                                style: TextStyle(fontSize: 18),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Text(
+                                  drinkClass[index]["name"],
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                              // 다른 내용 추가
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                          left: 30,
+                                        ),
+                                        height: 200,
+                                        child: ClipRRect(
+                                          child: Image.asset(
+                                              drinkClass[index]["image"],
+                                              fit: BoxFit.cover),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 200,
+                                        margin: const EdgeInsets.all(20),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              drinkClass[index]["name"],
+                                              style: const TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Expanded(child: Container()),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(20),
+                                        ),
+                                      ),
+                                      height: 100,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(20),
+                                        ),
+                                      ),
+                                      height: 100,
+                                    ),
+                                  )
+                                ],
+                              )
                             ],
                           ),
                         ),
