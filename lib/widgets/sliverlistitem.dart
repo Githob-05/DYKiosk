@@ -47,6 +47,13 @@ class SliverListItem extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                               color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.brown.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 10,
+                                ),
+                              ],
                               borderRadius: BorderRadius.circular(20)),
                           width: double.infinity,
                           height: double.infinity,
@@ -109,26 +116,42 @@ class SliverListItem extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: Container(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.only(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.brown.withOpacity(0.8),
+                                        borderRadius: const BorderRadius.only(
                                           bottomLeft: Radius.circular(20),
                                         ),
                                       ),
                                       height: 100,
+                                      child: const Text(
+                                        "👨🏻‍🏫  선생님  👩🏻‍🏫",
+                                        style: TextStyle(
+                                          fontSize: 27,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   Expanded(
                                     child: Container(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.blue,
-                                        borderRadius: BorderRadius.only(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.brown.withOpacity(0.6),
+                                        borderRadius: const BorderRadius.only(
                                           bottomRight: Radius.circular(20),
                                         ),
                                       ),
                                       height: 100,
+                                      child: const Text(
+                                        "👨🏻‍🎓  학생  👩🏻‍🎓",
+                                        style: TextStyle(
+                                          fontSize: 27,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               )
                             ],
