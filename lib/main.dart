@@ -163,6 +163,11 @@ class _HomeState extends State<Home> {
                 drinkType: '기타',
               ),
             ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 60,
+              ),
+            )
           ],
         ),
       ),
