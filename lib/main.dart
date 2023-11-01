@@ -1,13 +1,13 @@
-import 'package:dy_kiosk/widgets/sliverlistitem.dart';
+import 'package:dy_kiosk/pages/selected_drink_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void main() {
-  runApp(const Home());
+  runApp(Home());
 }
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -106,116 +106,528 @@ List<Map> etc = [
   },
 ];
 
+void _showRequestInputDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('주문하시겠습니까?'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('취소'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('확인'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const AlertDialog(
+                    title: Text("주문이 완료되었습니다."),
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 class _HomeState extends State<Home> {
+  List<Map> orderList = [];
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 200,
-              flexibleSpace: const FlexibleSpaceBar(
-                title: Text("덕영고 북카페"),
-                background: Image(
-                  image: NetworkImage(
-                    "https://blog.kakaocdn.net/dn/pW6x2/btrV0Q1FR5w/yugBLAZhQxVGlWTpWMQLVk/img.jpg",
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: TabBarDelegate(
-                minHeight: 200,
-                maxHeight: 200,
-                child: Container(
-                  height: size.height * 0.2,
-                  color: Colors.black,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          color: Colors.white,
-                          child: const Text("주문 목록"),
-                        ),
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기 이벤트
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                const SliverAppBar(
+                  expandedHeight: 200,
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: Text("덕영고 북카페"),
+                    background: Image(
+                      image: NetworkImage(
+                        "https://blog.kakaocdn.net/dn/pW6x2/btrV0Q1FR5w/yugBLAZhQxVGlWTpWMQLVk/img.jpg",
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                color: Colors.white,
-                                child: ListView.builder(
-                                  itemCount: 100,
-                                  itemBuilder: (BuildContext ctx, int idx) {
-                                    return Container(
-                                      child: Text('Content Number ${idx}'),
-                                    );
-                                  },
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: TabBarDelegate(
+                    minHeight: 200,
+                    maxHeight: 200,
+                    child: Container(
+                      height: size.height * 0.2,
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 8),
+                              alignment: Alignment.centerLeft,
+                              color: Colors.white,
+                              child: const Text(
+                                "주문 목록",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                color: Colors.green,
-                              ),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    margin: const EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                    child: ListView.builder(
+                                      itemCount: orderList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return SizedBox(
+                                          height: size.height * 0.04,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 3,
+                                                child: Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  margin:
+                                                      const EdgeInsets.all(3),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 5),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.brown
+                                                        .withOpacity(0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  child: Text(
+                                                    orderList[index]["name"],
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  margin:
+                                                      const EdgeInsets.all(3),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.brown
+                                                        .withOpacity(0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  child: Text(
+                                                    orderList[index]["count"],
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 5,
+                                                child: Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  margin:
+                                                      const EdgeInsets.all(3),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 5),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.brown
+                                                        .withOpacity(0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  child: Text(
+                                                    orderList[index]["request"],
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  margin:
+                                                      const EdgeInsets.all(3),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 5),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.red
+                                                        .withOpacity(0.2),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  child: IconButton(
+                                                    icon: const Icon(
+                                                        Icons.delete),
+                                                    onPressed: () {
+                                                      orderList.remove(
+                                                          orderList[index]);
+                                                      setState(() {});
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    color: Colors.white,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: Builder(
+                                              builder: (BuildContext context) {
+                                            return Container(
+                                              margin: const EdgeInsets.all(6),
+                                              width: size.width,
+                                              child: OutlinedButton(
+                                                style: OutlinedButton.styleFrom(
+                                                  backgroundColor: Colors.brown
+                                                      .withOpacity(0.5),
+                                                ),
+                                                onPressed: () {},
+                                                child: const Text(
+                                                  "취소",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Builder(
+                                              builder: (BuildContext context) {
+                                            return Container(
+                                              margin: const EdgeInsets.all(6),
+                                              width: size.width,
+                                              child: OutlinedButton(
+                                                style: OutlinedButton.styleFrom(
+                                                  backgroundColor: Colors.brown
+                                                      .withOpacity(0.5),
+                                                ),
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Center(
+                                                        child: Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      30,
+                                                                  vertical:
+                                                                      size.height *
+                                                                          0.3),
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20),
+                                                            ),
+                                                            width:
+                                                                double.infinity,
+                                                            height:
+                                                                double.infinity,
+                                                            child: Column(
+                                                              children: [
+                                                                Container(
+                                                                  margin: EdgeInsets.all(10),
+                                                                  child: Text("선택해주세요!"),
+                                                                ),
+                                                                Container(
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        flex: 1,
+                                                                        child: TextButton(
+                                                                          onPressed: () {  },
+                                                                          child: Container(
+                                                                            alignment: Alignment.center,
+                                                                            margin: EdgeInsets.all(10),
+                                                                            decoration: BoxDecoration(
+                                                                              color: Colors.brown.shade200,
+                                                                              borderRadius: BorderRadius.circular(20),
+                                                                            ),
+                                                                            height: size.height,
+                                                                              child: Text("선생님", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        flex: 1,
+                                                                        child:
+                                                                        TextButton(
+                                                                          onPressed: () {  },
+                                                                          child: Container(
+                                                                            alignment: Alignment.center,
+                                                                            margin: EdgeInsets.all(10),
+                                                                            decoration: BoxDecoration(
+                                                                                color: Colors.brown.shade100,
+                                                                                borderRadius: BorderRadius.circular(20)
+                                                                            ),
+                                                                            height: size.height,
+                                                                            child: Text("학생", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: const Text(
+                                                  "주문하기",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: size.height * 0.03,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SliverListItem(
+                    drinkClass: americano,
+                    drinkType: '커피',
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SliverListItem(
+                    drinkClass: latte,
+                    drinkType: '라떼',
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SliverListItem(
+                    drinkClass: ades,
+                    drinkType: '에이드',
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SliverListItem(
+                    drinkClass: cocoa,
+                    drinkType: '음료',
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SliverListItem(
+                    drinkClass: milkTea,
+                    drinkType: '밀크티',
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SliverListItem(
+                    drinkClass: etc,
+                    drinkType: '기타',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  SliverListItem({required List<Map> drinkClass, required String drinkType}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Text(drinkType,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 10.0,
+              childAspectRatio: 0.8,
+            ),
+            itemBuilder: (context, index) => InkWell(
+              onTap: () async {
+                final orderInfo = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => SelectedDrinkPage(
+                            drinkData: drinkClass[index],
+                          )),
+                );
+
+                if (orderInfo != null) {
+                  setState(() {
+                    orderList.add(orderInfo);
+                  });
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(30)),
+                        child: Image.asset(drinkClass[index]["image"],
+                            fit: BoxFit.cover),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        children: [
+                          Text(drinkClass[index]["name"]),
+                          Text("${drinkClass[index]["price"]}원")
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: SliverListItem(
-                drinkClass: americano,
-                drinkType: '커피',
-              ),
+            itemCount: drinkClass.length,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void selectStudentTeacher(BuildContext context) async {
+    Size size = MediaQuery.of(context).size;
+  }
+
+  void teacherOrderDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('주문하시겠습니까?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            SliverToBoxAdapter(
-              child: SliverListItem(
-                drinkClass: latte,
-                drinkType: '라떼',
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SliverListItem(
-                drinkClass: ades,
-                drinkType: '에이드',
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SliverListItem(
-                drinkClass: cocoa,
-                drinkType: '음료',
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SliverListItem(
-                drinkClass: milkTea,
-                drinkType: '밀크티',
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SliverListItem(
-                drinkClass: etc,
-                drinkType: '기타',
-              ),
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("주문이 완료되었습니다."),
+                    );
+                  },
+                );
+              },
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
