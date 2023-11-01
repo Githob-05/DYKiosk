@@ -1,4 +1,3 @@
-import 'package:dy_kiosk/widgets/mainsliverappber.dart';
 import 'package:dy_kiosk/widgets/sliverlistitem.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,7 +66,7 @@ List<Map> latte = [
     "image": "assets/images/greenLatte.jpeg",
   },
   {
-    "name": "딸리라떼",
+    "name": "딸기라떼",
     "price": 2000,
     "image": "assets/images/strawberryLatte.jpeg",
   },
@@ -110,22 +109,73 @@ List<Map> etc = [
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: CustomScrollView(
           slivers: [
-            const MainSliverAppBer(),
-            SliverToBoxAdapter(
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 30,horizontal: 20),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            SliverAppBar(
+              expandedHeight: 200,
+              flexibleSpace: const FlexibleSpaceBar(
+                title: Text("덕영고 북카페"),
+                background: Image(
+                  image: NetworkImage(
+                    "https://blog.kakaocdn.net/dn/pW6x2/btrV0Q1FR5w/yugBLAZhQxVGlWTpWMQLVk/img.jpg",
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: TabBarDelegate(
+                minHeight: 200,
+                maxHeight: 200,
+                child: Container(
+                  height: size.height * 0.2,
+                  color: Colors.black,
+                  child: Column(
                     children: [
-                      Text("어서오세요. 덕영고 북카페입니다.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                      Text("개발자 - 3학년 10반 신승호"),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          color: Colors.white,
+                          child: const Text("주문 목록"),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                color: Colors.white,
+                                child: ListView.builder(
+                                  itemCount: 100,
+                                  itemBuilder: (BuildContext ctx, int idx) {
+                                    return Container(
+                                      child: Text('Content Number ${idx}'),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
-                  )),
+                  ),
+                ),
+              ),
             ),
             SliverToBoxAdapter(
               child: SliverListItem(
@@ -163,14 +213,45 @@ class _HomeState extends State<Home> {
                 drinkType: '기타',
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(
-                height: 60,
-              ),
-            )
           ],
         ),
       ),
     );
+  }
+}
+
+class TabBarDelegate extends SliverPersistentHeaderDelegate {
+  final double maxHeight;
+  final double minHeight;
+  final Widget child;
+
+  TabBarDelegate({
+    required this.maxHeight,
+    required this.minHeight,
+    required this.child,
+  });
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return SizedBox.expand(
+      child: child,
+    );
+  }
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  bool shouldRebuild(TabBarDelegate oldDelegate) {
+    return oldDelegate.maxHeight != maxHeight ||
+        oldDelegate.minHeight != minHeight ||
+        oldDelegate.child != child;
   }
 }
