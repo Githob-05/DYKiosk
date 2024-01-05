@@ -189,6 +189,7 @@ class _SelectedDrinkPageState extends State<SelectedDrinkPage> {
                       ),
                       Container(
                         width: size.width * 0.5,
+                        height: size.height * 0.2,
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -245,40 +246,15 @@ class _SelectedDrinkPageState extends State<SelectedDrinkPage> {
                       flex: 1,
                       child: InkWell(
                         onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("주문 목록에 추가하시겠습니까?"),
-                                  content: Text(
-                                      "${widget.drinkData["name"]}\n$drinkCount잔\n${_requestTextController.text}"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text("취소"),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Map<String, dynamic> orderInfo = {
-                                          "name": widget.drinkData["name"], // 선택한 음료 이름
-                                          "count": drinkCount.toString(), // 선택한 음료 수량
-                                          "request": _requestTextController.text, // 요청사항 (필요하면 추가)
-                                        };
-                                        // 이전 화면으로 돌아가면서 주문 정보 전달
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop(orderInfo);
-                                      },
-                                      child: const Text("확인"),
-                                    ),
-                                  ],
-                                );
-                              });
-                          print(
-                              "메뉴 이름\n${_requestTextController.text},\n $drinkCount잔");
-                          drinkCount = 1;
+                          Map<String, dynamic> orderInfo = {
+                            "name": widget.drinkData["name"], // 선택한 음료 이름
+                            "count": drinkCount.toString(), // 선택한 음료 수량
+                            "request":
+                                _requestTextController.text, // 요청사항 (필요하면 추가)
+                          };
+                          Navigator.of(context).pop(orderInfo);
                         },
+
                         child: Ink(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),

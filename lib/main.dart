@@ -1,13 +1,12 @@
 import 'package:dy_kiosk/pages/selected_drink_page.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 void main() {
-  runApp(Home());
+  runApp(const Home());
 }
 
 class Home extends StatefulWidget {
-  Home({super.key});
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -201,8 +200,8 @@ class _HomeState extends State<Home> {
                                   child: Container(
                                     margin: const EdgeInsets.all(5),
                                     padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                       color: Colors.white,
@@ -365,96 +364,18 @@ class _HomeState extends State<Home> {
                                               width: size.width,
                                               child: OutlinedButton(
                                                 style: OutlinedButton.styleFrom(
-                                                  backgroundColor: Colors.brown
-                                                      .withOpacity(0.5),
+                                                  backgroundColor: Colors.brown.withOpacity(0.5),
                                                 ),
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return Center(
-                                                        child: Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      30,
-                                                                  vertical:
-                                                                      size.height *
-                                                                          0.3),
-                                                          child: Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
-                                                            ),
-                                                            width:
-                                                                double.infinity,
-                                                            height:
-                                                                double.infinity,
-                                                            child: Column(
-                                                              children: [
-                                                                Container(
-                                                                  margin: EdgeInsets.all(10),
-                                                                  child: Text("선택해주세요!"),
-                                                                ),
-                                                                Container(
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Expanded(
-                                                                        flex: 1,
-                                                                        child: TextButton(
-                                                                          onPressed: () {  },
-                                                                          child: Container(
-                                                                            alignment: Alignment.center,
-                                                                            margin: EdgeInsets.all(10),
-                                                                            decoration: BoxDecoration(
-                                                                              color: Colors.brown.shade200,
-                                                                              borderRadius: BorderRadius.circular(20),
-                                                                            ),
-                                                                            height: size.height,
-                                                                              child: Text("선생님", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      Expanded(
-                                                                        flex: 1,
-                                                                        child:
-                                                                        TextButton(
-                                                                          onPressed: () {  },
-                                                                          child: Container(
-                                                                            alignment: Alignment.center,
-                                                                            margin: EdgeInsets.all(10),
-                                                                            decoration: BoxDecoration(
-                                                                                color: Colors.brown.shade100,
-                                                                                borderRadius: BorderRadius.circular(20)
-                                                                            ),
-                                                                            height: size.height,
-                                                                            child: Text("학생", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
-                                                                          ),
-                                                                        ),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
+                                                onPressed: () async {
+                                                  await test(context);
+                                                  await showDialog(context: context, builder: (context) {
+                                                    return Container(
+                                                    );
                                                 },
                                                 child: const Text(
                                                   "주문하기",
                                                   style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15),
+                                                      color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
                                                 ),
                                               ),
                                             );
@@ -618,7 +539,7 @@ class _HomeState extends State<Home> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
+                    return const AlertDialog(
                       title: Text("주문이 완료되었습니다."),
                     );
                   },
@@ -666,4 +587,96 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
         oldDelegate.minHeight != minHeight ||
         oldDelegate.child != child;
   }
+}
+
+Future test(BuildContext context) {
+  Size size = MediaQuery.of(context).size;
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 20,
+          ),
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(
+                20,
+              ),
+            ),
+            width: size.width * 0.8,
+            height: size.height * 0.4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: const Text(
+                    "선택해주세요!",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin:
+                          const EdgeInsets.only(left: 6, right: 3),
+                          decoration: BoxDecoration(
+                            color: Colors.brown.shade200,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          height: size.height * 0.3,
+                          child: const Text(
+                            "선생님",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin:
+                          const EdgeInsets.only(left: 3, right: 6),
+                          decoration: BoxDecoration(
+                              color: Colors.brown.shade100,
+                              borderRadius: BorderRadius.circular(20)),
+                          height: size.height * 0.3,
+                          child: const Text(
+                            "학생",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }
